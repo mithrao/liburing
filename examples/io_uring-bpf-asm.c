@@ -13,8 +13,10 @@
 #include <linux/ip.h>
 #include <stddef.h>
 #include "liburing.h"
-#include <bpf/bpf.h>
-#include <linux/bpf.h>
+// #include <bpf/bpf.h>
+// #include <linux/bpf.h>
+#include "../../linux/tools/lib/bpf/bpf.h"
+#include "../../linux/include/linux/bpf.h"
 #include <sys/mman.h>
 
 #include "bpf-helpers.h"
