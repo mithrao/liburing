@@ -79,8 +79,9 @@ static unsigned long readv(u32 kv)
 }
 
 SEC("iouring.s/")
-int test(struct io_uring_bpf_ctx *ctx)
+int test(struct io_bpf_ctx *bpf_ctx)
 {
+    struct io_uring_bpf_ctx *ctx = bpf_ctx->u;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe = {};
     u32 key = 0;
@@ -99,21 +100,21 @@ int test(struct io_uring_bpf_ctx *ctx)
     writev(ARR_SLOT, 11);
 
     /* emit CQE to the main CQ */
-    iouring_emit_cqe(ctx, 0, 3, 13, 0);
+    iouring_emit_cqe(bpf_ctx, 0, 3, 13, 0);
 
     /* emit 2 CQEs to a second CQ and reap them */
-    iouring_emit_cqe(ctx, cq_idx, 4, 17, 0);
-    iouring_emit_cqe(ctx, cq_idx, 5, 19, 0);
-    ret = iouring_reap_cqe(ctx, cq_idx, &cqe, sizeof(cqe));
+    iouring_emit_cqe(bpf_ctx, cq_idx, 4, 17, 0);
+    iouring_emit_cqe(bpf_ctx, cq_idx, 5, 19, 0);
+    ret = iouring_reap_cqe(bpf_ctx, cq_idx, &cqe, sizeof(cqe));
     writev(ARR_SLOT + 1, ret ? ret : cqe.user_data);
-    ret = iouring_reap_cqe(ctx, cq_idx, &cqe, sizeof(cqe));
+    ret = iouring_reap_cqe(bpf_ctx, cq_idx, &cqe, sizeof(cqe));
     writev(ARR_SLOT + 2, ret ? ret : cqe.user_data);
 
     /* submit nop SQE */
     io_uring_prep_nop(&sqe);
     sqe.user_data = 2;
     sqe.flags = 0;
-    ret = iouring_queue_sqe(ctx, &sqe, sizeof(sqe));
+    ret = iouring_queue_sqe(bpf_ctx, &sqe, sizeof(sqe));
     writev(ARR_SLOT + 3, ret < 0 ? ret : 21);
 
     /* write back user_data */
@@ -143,8 +144,9 @@ static inline void io_uring_prep_timeout(struct io_uring_sqe *sqe,
 }
 
 SEC("iouring.s/")
-int counting(struct io_uring_bpf_ctx *ctx)
+int counting(struct io_bpf_ctx *bpf_ctx)
 {
+    struct io_uring_bpf_ctx *ctx = bpf_ctx->u;
     struct counting_ctx *uctx = (void *)(unsigned long)ctx->user_data;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe;
@@ -156,14 +158,14 @@ int counting(struct io_uring_bpf_ctx *ctx)
     writev(0, v + 1);
 
     if (v != 0) {
-        int ret = iouring_reap_cqe(ctx, cq_idx, &cqe, sizeof(cqe));
+        int ret = iouring_reap_cqe(bpf_ctx, cq_idx, &cqe, sizeof(cqe));
         writev(1, ret ? ret : cqe.user_data);
     }
 
     io_uring_prep_timeout(&sqe, &uctx->ts, 0, 0);
     sqe.user_data = 5;
     sqe.cq_idx = cq_idx;
-    iouring_queue_sqe(ctx, &sqe, sizeof(sqe));
+    iouring_queue_sqe(bpf_ctx, &sqe, sizeof(sqe));
 
     ctx->wait_idx = cq_idx;
     ctx->wait_nr = 1;
@@ -172,8 +174,9 @@ int counting(struct io_uring_bpf_ctx *ctx)
 }
 
 SEC("iouring.s/")
-int pingpong(struct io_uring_bpf_ctx *ctx)
+int pingpong(struct io_bpf_ctx *bpf_ctx)
 {
+    struct io_uring_bpf_ctx *ctx = bpf_ctx->u;
     struct ping_ctx *uctx = (void *)(unsigned long)ctx->user_data;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe;
@@ -189,10 +192,10 @@ wait:
         ctx->wait_nr = 1;
         return 0;
     }
-    ret = iouring_reap_cqe(ctx, idx + 1, &cqe, sizeof(cqe));
+    ret = iouring_reap_cqe(bpf_ctx, idx + 1, &cqe, sizeof(cqe));
     iter = cqe.user_data;
     cq_idx2 = (idx ^ 1) + 1;
-    iouring_emit_cqe(ctx, cq_idx2, iter + 1, 0, 0);
+    iouring_emit_cqe(bpf_ctx, cq_idx2, iter + 1, 0, 0);
 
     if (iter < 20)
         goto wait;
@@ -209,8 +212,9 @@ static inline void io_uring_prep_write(struct io_uring_sqe *sqe, int fd,
 #define IOSQE_FIXED_FILE        (1U << IOSQE_FIXED_FILE_BIT)
 
 SEC("iouring.s/")
-int write_file(struct io_uring_bpf_ctx *ctx)
+int write_file(struct io_bpf_ctx *bpf_ctx)
 {
+    struct io_uring_bpf_ctx *ctx = bpf_ctx->u;
     const int off_idx = 1, infl_idx = 0;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe;
@@ -220,7 +224,7 @@ int write_file(struct io_uring_bpf_ctx *ctx)
 
     for (i = 0; i < FILL_QD; i++) {
         if (inflight) {
-            ret = iouring_reap_cqe(ctx, 1, &cqe, sizeof(cqe));
+            ret = iouring_reap_cqe(bpf_ctx, 1, &cqe, sizeof(cqe));
             inflight--;
         }
     }
@@ -231,7 +235,7 @@ int write_file(struct io_uring_bpf_ctx *ctx)
                             cur_off * FILL_BLOCK_SIZE);
         sqe.flags = IOSQE_FIXED_FILE;
         sqe.cq_idx = 1;
-        ret = iouring_queue_sqe(ctx, &sqe, sizeof(sqe));
+        ret = iouring_queue_sqe(bpf_ctx, &sqe, sizeof(sqe));
         inflight++;
         cur_off++;
     }
