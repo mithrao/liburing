@@ -5,7 +5,8 @@
         "liburing.h": "c",
         "inttypes.h": "c",
         "stdbool.h": "c",
-        "signal.h": "c"
+        "signal.h": "c",
+        "bpf_helpers.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
