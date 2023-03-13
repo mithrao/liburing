@@ -23,10 +23,33 @@ static inline void io_uring_prep_nop(struct io_uring_sqe *sqe)
     io_uring_prep_rw(IORING_OP_NOP, sqe, -1, 0, 0, 0);
 }
 
-/* test `iouring_queue_sqe` */
+/* test customized iouring bpf calls */
+/** iouring_queue_sqe (fs/io_uring.c/io_bpf_queue_sqe)
+ * struct io_bpf_ctx *          bpf_ctx,
+ * const struct io_uring_sqe *  sqe,
+ * u32                          sqe_len
+*/
 static long (*iouring_queue_sqe) (void *ctx, struct io_uring_sqe *sqe, u32) = (void *) 164;
+/** iouring_emit_cqe (fs/io_uring.c/io_bpf_emit_cqe)
+ * struct io_bpf_ctx *  bpf_ctx
+ * u32                  cq_idx
+ * u64                  user_data
+ * s32                  res
+ * u32                  flags
+*/
 static long (*iouring_emit_cqe) (void *ctx, u32 cq, u64 data, u32 res, u32 flags) = (void *) 165;
+/** iouring_reap_cqe (fs/io_uring.c/io_bpf_reap_cqe)
+ * struct io_bpf_ctx * 	 bpf_ctx
+ * u32				 	 cq_idx
+ * struct io_uring_cqe * cqe_out
+ * u32  				 cqe_len
+*/
 static long (*iouring_reap_cqe) (void *ctx, u32 cq, struct io_uring_cqe *cqe, u32) = (void *) 166;
+/** iouring_bpf_copy_to_user (kernel/bpf/helpers.c/bpf_copy_to_user)
+ * void __user *    user_ptr
+ * const void *     src
+ * u32              size
+*/
 static long (*iouring_bpf_copy_to_user) (void *ctx, const void *src, __u32 size) = (void *) 167;
 
 struct bpf_map_def SEC("maps") arr = {
@@ -103,6 +126,48 @@ int test(struct io_uring_bpf_ctx *ctx)
     bpf_copy_to_user(uptr, &secret, sizeof(secret));
 
     ctx->wait_idx = 0;
+    ctx->wait_nr = 1;
+
+    return 0;
+}
+
+struct bpf_ctx
+{
+    struct __kernel_timespec ts;
+};
+
+static inline void io_uring_prep_timeout(struct io_uring_sqe *sqe,
+                                        struct __kernel_timespec *ts,
+                                        unsigned count, unsigned flags)
+{
+    io_uring_prep_rw(IORING_OP_TIMEOUT, sqe, -1, ts, 1, count);
+    sqe->timeout_flags = flags;
+}
+
+SEC("iouring.s/")
+int counting(struct io_uring_bpf_ctx *ctx)
+{
+    struct __kernel_timespec *ts = (void *)(unsigned long) ctx->user_data;
+    struct io_uring_sqe sqe;
+    struct io_uring_cqe cqe;
+    unsigned long v = readv(0);
+    unsigned int cq_idx = 1;
+
+    if (v > 10)
+        return 0;
+    writev(0, v + 1);
+
+    if (v != 0) {
+        int ret = iouring_reap_cqe(ctx, cq_idx, &cqe, sizeof(cqe));
+        writev(1, ret ? ret : cqe.user_data);
+    }
+
+    io_uring_prep_timeout(&sqe, ts, 0, 0);
+    sqe.user_data = 5;
+    sqe.cq_idx = cq_idx;
+    iouring_queue_sqe(ctx, &sqe, sizeof(sqe));
+
+    ctx->wait_idx = cq_idx;
     ctx->wait_nr = 1;
 
     return 0;
