@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
 #include <argp.h>
 #include <assert.h>
-// #include <bpf/bpf.h>
-// #include <bpf/libbpf.h>
-#include "../../../linux/tools/lib/bpf/bpf.h"
-#include "../../../linux/tools/lib/bpf/libbpf.h"
+#include <bpf/bpf.h>
+#include <bpf/libbpf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,13 +39,13 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
         exit(1);
     }
 
-    obj = uring_bpf_open();
+    obj = uring_bpf__open();
     if (!obj) {
         fprintf(stderr, "failed to open and/or load BPF object\n");
         exit(1);
     }
 
-    ret = uring_bpf_load(obj);
+    ret = uring_bpf__load(obj);
     if (ret) {
         fprintf(stderr, "fialed to load BPF object: %d\n", ret);
         exit(1);
@@ -57,14 +55,14 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
     prog_fds[1] = bpf_program__fd(obj->progs.counting);
     prog_fds[2] = bpf_program__fd(obj->progs.pingpong);
     prog_fds[3] = bpf_program__fd(obj->progs.write_file);
-    ret = __sys_io_uring_register(ring.irng_fd, IORING_REGISTER_BPF,
+    ret = __sys_io_uring_register(ring->ring_fd, IORING_REGISTER_BPF,
                                     prog_fds, ARRAY_SIZE(prog_fds));
     
     if (ret < 0) {
         fprintf(stderr, "bpf prog register failed %i\n", ret);
 		exit(1);
     }
-    *prog = obj;
+    *pobj = obj;
 }
 
 static void print_map(int map_fd, int limit)
@@ -79,11 +77,16 @@ static void print_map(int map_fd, int limit)
 	fprintf(stderr, "\n");
 }
 
+/** example 1
+ * bpf writing to userspace: `copy_to_user`
+ * bpf reading from userspace: `copy_from_user` 
+ * bpf waiting on CQ: `io_uring_wait_cqe`
+ */
 static int test1(void)
 {
     struct io_uring ring;
-	struct io_uring_cqe *cqe;
 	struct io_uring_sqe *sqe;
+	struct io_uring_cqe *cqe;
 	struct uring_bpf *obj;
 	int ret;
 	unsigned long secret = 29;
@@ -105,27 +108,31 @@ static int test1(void)
             break;
         assert(ret == 0);
         fprintf(stderr, "CQE user_data %lu, res %i flags %u\n",
-                (unsigned long) cqe->user_data,
-                (int) cqe->res, (unsigned) cqe->flags);
+            (unsigned long) cqe->user_data,
+            (int) cqe->res, (unsigned) cqe->flags);
         io_uring_cqe_seen(&ring, cqe);
     }
 
     print_map(bpf_map__fd(obj->maps.arr), 10);
     fprintf(stderr, "new secret %lu\n", secret);
-
     uring_bpf__destroy(obj);
     io_uring_queue_exit(&ring);
     return 0;
 }
 
+/** example 2
+ * wait for N timeout requests 
+ */
 static int test2(void)
 {
     struct counting_ctx b = {
-        .ts = { .tv_nsec = 200000000, }
+        .ts = { 
+            .tv_nsec = 200000000, 
+        }
     };
     struct io_uring ring;
-    struct io_uirng_cqe *cqe;
     struct io_uring_sqe *sqe;
+    struct io_uirng_cqe *cqe;
     struct uring_bpf *obj;
     int ret;
 
@@ -134,7 +141,6 @@ static int test2(void)
     sqe = io_uring_get_sqe(&ring);
     io_uring_prep_bpf(sqe, 1);
     sqe->user_data = (__u64)(unsigned long) &b;
-
     ret = io_uring_submit(&ring);
     assert(ret == 1);
 
@@ -144,13 +150,15 @@ static int test2(void)
     io_uring_cqe_seen(&ring, cqe);
 
     print_map(bpf_map__fd(obj->maps.arr), 10);
-
     uring_bpf__destroy(obj);
     io_uring_queue_exit(&ring);
     
     return 0;
 }
 
+/** example 3
+ * ping pong CQEs b/w 2 BPF requests 
+ */
 static int test3(void)
 {
     struct ping_ctx uctx[2];
@@ -196,7 +204,9 @@ static int test3(void)
 }
 
 static char verify_buf[FILL_BLOCK_SIZE];
-
+/** example 4
+ * bpf writing to file with QD > 1 
+ */
 static int test4(void)
 {
     struct io_uring ring;
@@ -225,13 +235,13 @@ static int test4(void)
 
     sqe = io_uring_get_sqe(&ring);
     io_uring_prep_bpf(sqe, 3);
-    sqe->user_data = (__u64)(unsigned long)mem;
+    sqe->user_data = (__u64)(unsigned long) mem;
     ret = io_uring_submit(&ring);
     assert(ret == 1);
 
     ret = io_uring_wait_cqe(&ring, &cqe);
     assert(!ret);
-    fprintf(stderr, "ret %i, udata %lu\n", cqe->res, (unsigned long)cqe->user_data);
+    fprintf(stderr, "ret %i, udata %lu\n", cqe->res, (unsigned long) cqe->user_data);
     io_uring_cqe_seen(&ring, cqe);
 
     print_map(bpf_map__fd(obj->maps.arr), 10);
@@ -239,13 +249,11 @@ static int test4(void)
     io_uring_queue_exit(&ring);
     free(mem);
 
-    ret = read(fd, buf, 4096);
-    assert(ret == FILL_FSIZE);
     for (i = 0; i < FILL_BLOCKS; i++) {
         ret = read(fd, verify_buf, FILL_BLOCK_SIZE);
         assert(ret == FILL_BLOCK_SIZE);
         for (j = 0; j < FILL_BLOCK_SIZE; j++) {
-            assert(verify_buf[i] == pattern);
+            assert(verify_buf[j] == pattern);
         }
     }
     return 0;

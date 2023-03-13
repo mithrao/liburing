@@ -1,6 +1,5 @@
 #include "vmlinux.h"
-// #include <bpf/bpf_helpers.h>
-#include "../../../linux/tools/bpf/bpf_helpers.h"
+#include <bpf/bpf_helpers.h>
 #include <bpf/bpf_core_read.h>
 #include "uring.h"
 
@@ -31,6 +30,7 @@ static inline void io_uring_prep_nop(struct io_uring_sqe *sqe)
  * u32                          sqe_len
 */
 static long (*iouring_queue_sqe) (void *ctx, struct io_uring_sqe *sqe, u32) = (void *) 164;
+
 /** iouring_emit_cqe (fs/io_uring.c/io_bpf_emit_cqe)
  * struct io_bpf_ctx *  bpf_ctx
  * u32                  cq_idx
@@ -39,6 +39,7 @@ static long (*iouring_queue_sqe) (void *ctx, struct io_uring_sqe *sqe, u32) = (v
  * u32                  flags
 */
 static long (*iouring_emit_cqe) (void *ctx, u32 cq, u64 data, u32 res, u32 flags) = (void *) 165;
+
 /** iouring_reap_cqe (fs/io_uring.c/io_bpf_reap_cqe)
  * struct io_bpf_ctx * 	 bpf_ctx
  * u32				 	 cq_idx
@@ -46,6 +47,7 @@ static long (*iouring_emit_cqe) (void *ctx, u32 cq, u64 data, u32 res, u32 flags
  * u32  				 cqe_len
 */
 static long (*iouring_reap_cqe) (void *ctx, u32 cq, struct io_uring_cqe *cqe, u32) = (void *) 166;
+
 /** iouring_bpf_copy_to_user (kernel/bpf/helpers.c/bpf_copy_to_user)
  * void __user *    user_ptr
  * const void *     src
@@ -94,7 +96,7 @@ int test(struct io_uring_bpf_ctx *ctx)
     write(REENTER_SLOT, 1);
 
     /* just write some values */
-    writev(ARR_SLOT ,11);
+    writev(ARR_SLOT, 11);
 
     /* emit CQE to the main CQ */
     iouring_emit_cqe(ctx, 0, 3, 13, 0);
@@ -131,11 +133,6 @@ int test(struct io_uring_bpf_ctx *ctx)
 
     return 0;
 }
-
-struct bpf_ctx
-{
-    struct __kernel_timespec ts;
-};
 
 static inline void io_uring_prep_timeout(struct io_uring_sqe *sqe,
                                         struct __kernel_timespec *ts,
