@@ -29,7 +29,7 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
     struct uring_bpf *obj;
     struct io_uring_params param;
     __u32 cq_sizes[2] = {128, 128};
-    int ret, prog_fds[3];
+    int ret, prog_fds[4];
 
     /* 1 additional CQ, 2 in total */
     memset(&param, 0, sizeof(param));
@@ -56,6 +56,7 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
     prog_fds[0] = bpf_program__fd(obj->progs.test);
     prog_fds[1] = bpf_program__fd(obj->progs.counting);
     prog_fds[2] = bpf_program__fd(obj->progs.pingpong);
+    prog_fds[3] = bpf_program__fd(obj->progs.write_file);
     ret = __sys_io_uring_register(ring.irng_fd, IORING_REGISTER_BPF,
                                     prog_fds, ARRAY_SIZE(prog_fds));
     
@@ -194,6 +195,56 @@ static int test3(void)
     return 0;
 }
 
+static int test4(void)
+{
+    struct io_uring ring;
+	struct io_uring_cqe *cqe;
+	struct io_uring_sqe *sqe;
+	struct uring_bpf *obj;
+	int i, ret, fd;
+    char filename[] = "./.tmp/bpf_file_XXXXXX";
+	char buf[4096], pattern = 0xae;
+    void *mem;
+
+    ret = posix_memalign(&mem, 4096, 4096);
+    assert(!ret);
+    memset(mem, patter, 4096);
+
+    fd = mkstemp(filename);
+    if (fd < 0) {
+        fprintf(stderr, "mkstemp failed\n");
+        return 1;
+    }
+    unlink(filename);
+
+    ring_prep(&ring, &obj);
+    ret = io_uring_register_files(&ring, &fd, 1);
+    assert(!ret);
+
+    sqe = io_uring_get_sqe(&ring);
+    io_uring_prep_bpf(sqe, 3);
+    sqe->user_data = (__u64)(unsigned long)mem;
+    ret = io_uring_submit(&ring);
+    assert(ret == 1);
+
+    ret = io_uring_wait_cqe(&ring, &cqe);
+    assert(!ret);
+    fprintf(stderr, "ret %i, udata %lu\n", cqe->res, (unsigned long)cqe->user_data);
+    io_uring_cqe_seen(&ring, cqe);
+
+    print_map(bpf_map__fd(obj->maps.arr), 10);
+    uring_bpf__destroy(obj);
+    io_uring_queue_exit(&ring);
+    free(mem);
+
+    ret = read(fd, buf, 4096);
+    assert(ret == FILL_FSIZE);
+    for (i = 0; i < ret; i++) {
+        assert(buf[i] == pattern);
+    }
+    return 0;
+}
+
 int main(int argc, char const *argv[])
 {
     fprintf(stderr, "test1()============\n");
@@ -202,5 +253,7 @@ int main(int argc, char const *argv[])
     test2();
     fprintf(stderr, "test3()============\n");
     test3();
+    fprintf(stderr, "test4()============\n");
+    test4();
     return 0;
 }
