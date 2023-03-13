@@ -15,15 +15,21 @@
 #include "liburing.h"
 #include "../../src/syscall.h"
 #include "uring.skel.h"
+#include "uring.h"
 
-#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
+static inline void io_uring_prep_bpf(struct io_uring_sqe *sqe, unsigned idx)
+{
+    io_uring_prep_nop(sqe);
+    sqe->off = idx;
+    sqe->opcode = IORING_OP_BPF;
+}
 
 static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
 {
     struct uring_bpf *obj;
     struct io_uring_params param;
     __u32 cq_sizes[2] = {128, 128};
-    int ret, prog_fds[2];
+    int ret, prog_fds[3];
 
     /* 1 additional CQ, 2 in total */
     memset(&param, 0, sizeof(param));
@@ -48,7 +54,8 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
     }
 
     prog_fds[0] = bpf_program__fd(obj->progs.test);
-    prog_fds[1] = bpf_program__fd(obj->porgs.counting);
+    prog_fds[1] = bpf_program__fd(obj->progs.counting);
+    prog_fds[2] = bpf_program__fd(obj->progs.pingpong);
     ret = __sys_io_uring_register(ring.irng_fd, IORING_REGISTER_BPF,
                                     prog_fds, ARRAY_SIZE(prog_fds));
     
@@ -61,12 +68,14 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
 
 static void print_map(int map_fd, int limit)
 {
-    for (int i = 0; i < limit; i++) {
+    int i;
+    for (i = 0; i < limit; i++) {
         unsigned long cnt;
         __u32 key = i;
         assert(bpf_map_lookup_elem(map_fd, &key, &cnt) == 0);
         fprintf(stderr, "%lu ", cnt);
     }
+	fprintf(stderr, "\n");
 }
 
 static int test1(void)
@@ -81,11 +90,8 @@ static int test1(void)
     ring_prep(&ring, &obj);
 
     sqe = io_uring_get_sqe(&ring);
-    io_uring_prep_nop(sqe);
-    sqe->off = 0;
-    sqe->opcode = IORING_OP_BPF;
+    io_uring_prep_bpf(sqe, 0);
     sqe->user_data = (__u64)(unsigned long) &secret;
-    sqe->flags = 0;
 
     ret = io_uring_submit(&ring);
     assert(ret == 1);
@@ -104,20 +110,16 @@ static int test1(void)
     }
 
     print_map(bpf_map__fd(obj->maps.arr), 10);
-    fprintf(stderr, "\nnew secret %lu\n", secret);
+    fprintf(stderr, "new secret %lu\n", secret);
 
     uring_bpf__destroy(obj);
     io_uring_queue_exit(&ring);
     return 0;
 }
 
-struct bpf_ctx {
-    struct __kernel_timespec ts;
-};
-
 static int test2(void)
 {
-    struct bpf_ctx b = {
+    struct counting_ctx b = {
         .ts = { .tv_nsec = 200000000, }
     };
     struct io_uring ring;
@@ -129,11 +131,8 @@ static int test2(void)
     ring_prep(&ring, &obj);
 
     sqe = io_uring_get_sqe(&ring);
-    io_uring_prep_nop(sqe);
-    sqe->off = 1;
-    sqe->opcode = IORING_OP_BPF;
+    io_uring_prep_bpf(sqe, 1);
     sqe->user_data = (__u64)(unsigned long) &b;
-    sqe->flags = 0;
 
     ret = io_uring_submit(&ring);
     assert(ret == 1);
@@ -151,12 +150,57 @@ static int test2(void)
     return 0;
 }
 
+static int test3(void)
+{
+    struct ping_ctx uctx[2];
+    struct io_uring ring;
+    struct io_uring_sqe *sqe;
+    struct io_uring_cqe *cqe;
+    struct uring_bpf *obj;
+    int i, ret;
+
+    ring_prep(&ring, &obj);
+    uctx[0].idx = 0;
+    uctx[1].idx = 1;
+
+    sqe = io_uring_get_sqe(&ring);
+    io_uring_prep_bpf(sqe, 2);
+    sqe->user_data = (__u64)(unsigned long) &uctx[0];
+
+    sqe = io_uring_get_sqe(&ring);
+    io_uring_prep_bpf(sqe, 2);
+    sqe->user_data = (__u64)(unsigned long) &uctx[1];
+
+    /* kick off the first bpf */
+    sqe = io_uring_get_sqe(&ring);
+    io_uring_prep_nop(sqe);
+    sqe->user_data = 0; /* start from 0 */
+    sqe->cq_idx = 1;
+
+    ret = io_uring_submit(&ring);
+    assert(ret == 3);
+
+    /* wait for bpf's CQE */
+    for (i = 0; i < 2; i++) {
+        ret = io_uring_wait_cqe(&ring, &cqe);
+        assert(!ret);
+        fprintf(stderr, "ret %i, udata %lu\n", cqe->res, (unsigned long)cqe->user_data);
+        io_uring_cqe_seen(&ring, cqe);
+    }
+
+    print_map(bpf_map__fd(obj->map.arr), 10);
+    uring_bpf__destroy(obj);
+    io_uring_queue_exit(&ring);
+    return 0;
+}
 
 int main(int argc, char const *argv[])
 {
-    fprintf(stderr, "test1()\n");
+    fprintf(stderr, "test1()============\n");
     test1();
-    fprintf(stderr, "test2()\n");
+    fprintf(stderr, "test2()============\n");
     test2();
+    fprintf(stderr, "test3()============\n");
+    test3();
     return 0;
 }

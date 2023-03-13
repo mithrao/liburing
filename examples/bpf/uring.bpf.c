@@ -2,6 +2,7 @@
 // #include <bpf/bpf_helpers.h>
 #include "../../../linux/tools/bpf/bpf_helpers.h"
 #include <bpf/bpf_core_read.h>
+#include "uring.h"
 
 static inline void io_uring_prep_rw(int op, struct io_uring_sqe *sqe, int fd,
                             const void *addr, unsigned len, __u64 offset)
@@ -147,7 +148,7 @@ static inline void io_uring_prep_timeout(struct io_uring_sqe *sqe,
 SEC("iouring.s/")
 int counting(struct io_uring_bpf_ctx *ctx)
 {
-    struct __kernel_timespec *ts = (void *)(unsigned long) ctx->user_data;
+    struct counting_ctx *uctx = (void *)(unsigned long)ctx->user_data;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe;
     unsigned long v = readv(0);
@@ -162,7 +163,7 @@ int counting(struct io_uring_bpf_ctx *ctx)
         writev(1, ret ? ret : cqe.user_data);
     }
 
-    io_uring_prep_timeout(&sqe, ts, 0, 0);
+    io_uring_prep_timeout(&sqe, &uctx->ts, 0, 0);
     sqe.user_data = 5;
     sqe.cq_idx = cq_idx;
     iouring_queue_sqe(ctx, &sqe, sizeof(sqe));
@@ -170,6 +171,35 @@ int counting(struct io_uring_bpf_ctx *ctx)
     ctx->wait_idx = cq_idx;
     ctx->wait_nr = 1;
 
+    return 0;
+}
+
+SEC("iouring.s/")
+int pingpong(struct io_uring_bpf_ctx *ctx)
+{
+    struct ping_ctx *uctx = (void *)(unsigned long)ctx->user_data;
+    struct io_uring_sqe sqe;
+    struct io_uring_cqe cqe;
+    unsigned long v;
+    int idx, ret, iter;
+    int cq_idx2;
+
+    bpf_copy_from_user(&idx, sizeof(idx), &uctx->idx);
+    if (!readv(idx)) {
+        writev(idx, 1);
+wait:
+        ctx->wait_idx = idx + 1;
+        ctx->wait_nr = 1;
+        return 0;
+    }
+    ret = iouring_reap_cqe(ctx, idx + 1, &cqe, sizeof(cqe));
+    iter = cqe.user_data;
+    cq_idx2 = (idx ^ 1) + 1;
+    iouring_emit_cqe(ctx, cq_idx2, iter + 1, 0, 0);
+
+    if (iter < 20)
+        goto wait;
+    writev(idx + 5, iter);
     return 0;
 }
 
