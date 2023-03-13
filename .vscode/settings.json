@@ -6,7 +6,8 @@
         "inttypes.h": "c",
         "stdbool.h": "c",
         "signal.h": "c",
-        "bpf_helpers.h": "c"
+        "bpf_helpers.h": "c",
+        "random": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

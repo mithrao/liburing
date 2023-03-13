@@ -16,7 +16,7 @@
 #include "../../src/syscall.h"
 #include "uring.skel.h"
 
-#define NSEC_PER_SEC		1000000000ULL
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
 int main(int argc, char const *argv[])
 {
@@ -26,12 +26,12 @@ int main(int argc, char const *argv[])
     struct io_uring_sqe *sqe;
     struct uring_bpf *obj;
     int ret, prog_fd;
-    __u32 cq_sizes = 128;
+    __u32 cq_sizes[2] = {128, 128};
     unsigned long secret = 29;
 
     /* 1 additional CQ, 2 in total */
     memset(&param, 0, sizeof(param));
-    param.nr_cq = 1;
+    param.nr_cq = ARRAY_SIZE(cq_sizes);
     param.cq_sizes = (__u64) (unsigned long) &cq_sizes;
     ret = io_uring_queue_init_params(8, &ring, &param);
     if (ret) {
@@ -87,7 +87,7 @@ int main(int argc, char const *argv[])
         fprintf(stderr, "%lu ", cnt);
     }
     fprintf(stderr, "\nnew secret %lu\n", secret);
-    
+
     uring_bpf__destroy(obj);
 
     return 0;
