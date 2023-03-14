@@ -13,10 +13,8 @@
 #include <linux/ip.h>
 #include <stddef.h>
 #include "liburing.h"
-// #include <bpf/bpf.h>
-// #include <linux/bpf.h>
-#include "../../linux/tools/lib/bpf/bpf.h"
-#include "../../linux/include/linux/bpf.h"
+#include <bpf/bpf.h>
+#include <linux/bpf.h>
 #include <sys/mman.h>
 
 #include "bpf-helpers.h"
@@ -28,14 +26,11 @@ char bpf_log_buf[BPF_LOG_BUF_SIZE];
 
 static int bpf_example()
 {
-	struct bpf_load_program_attr load_attr;
 	struct io_uring_params p;
 	struct io_uring ring;
 	struct io_uring_cqe *cqe;
 	struct io_uring_sqe *sqe;
-	int ret;
-	int map_fd;
-	int key;
+	int ret, map_fd, key, prog_fd;
 	long long value = 0;
 	__u32 cq_sizes[2] = {128, 128};
 
@@ -48,7 +43,7 @@ static int bpf_example()
 		return 1;
 	}
 
-	map_fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, sizeof(key), sizeof(value),	256, 0);
+	map_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(key), sizeof(value), 256, NULL);
 	if (map_fd < 0) {
 		fprintf(stderr, "failed to create map '%s'\n", strerror(errno));
 		exit(1);
@@ -95,17 +90,13 @@ static int bpf_example()
 		BPF_EXIT_INSN(),
 	};
 
-	memset(&load_attr, 0, sizeof(struct bpf_load_program_attr));
-	load_attr.prog_type = (int)BPF_PROG_TYPE2_IOURING;
-	load_attr.expected_attach_type = 0;
-	load_attr.name = NULL;
-	load_attr.insns = prog;
-	load_attr.insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
-	load_attr.license = "GPL";
-	load_attr.kern_version = 0;
-	load_attr.prog_flags = BPF_F_SLEEPABLE;
-
-	int prog_fd = bpf_load_program_xattr(&load_attr, bpf_log_buf, BPF_LOG_BUF_SIZE);
+	const struct bpf_prog_load_opts opts = {
+		.prog_flags = BPF_F_SLEEPABLE,
+		.kern_version = 0,
+		.expected_attach_type = 0,
+	};
+	prog_fd = bpf_prog_load(BPF_PROG_TYPE2_IOURING, NULL, "GPL", prog, 
+							sizeof(prog) / sizeof(struct bpf_insn), &opts);
 	if (prog_fd < 0) {
 		bpf_log_buf[BPF_LOG_BUF_SIZE - 1] = 0;
 		fprintf(stderr, "%s\n", bpf_log_buf);

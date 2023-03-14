@@ -7,7 +7,10 @@
         "stdbool.h": "c",
         "signal.h": "c",
         "bpf_helpers.h": "c",
-        "random": "c"
+        "random": "c",
+        "types.h": "c",
+        "mman.h": "c",
+        "bpf-helpers.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
