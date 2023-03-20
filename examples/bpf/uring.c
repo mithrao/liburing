@@ -22,12 +22,13 @@ static inline void io_uring_prep_bpf(struct io_uring_sqe *sqe, unsigned idx)
     sqe->opcode = IORING_OP_BPF;
 }
 
-static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
+static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
 {
-    struct uring_bpf *obj;
+    struct uring_bpf *payload;
     struct io_uring_params param;
     __u32 cq_sizes[2] = {128, 128};
-    int ret, prog_fds[4];
+    int prog_fds[4];
+    int ret;
 
     /* 1 additional CQ, 2 in total */
     memset(&param, 0, sizeof(param));
@@ -39,30 +40,25 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf *pobj[])
         exit(1);
     }
 
-    obj = uring_bpf__open();
-    if (!obj) {
-        fprintf(stderr, "failed to open and/or load BPF object\n");
+    payload = uring_bpf__open_and_load();
+    if (!payload) {
+        fprintf(stderr, "failed to open and load BPF payloadect\n");
         exit(1);
     }
 
-    ret = uring_bpf__load(obj);
-    if (ret) {
-        fprintf(stderr, "fialed to load BPF object: %d\n", ret);
-        exit(1);
-    }
-
-    prog_fds[0] = bpf_program__fd(obj->progs.test);
-    prog_fds[1] = bpf_program__fd(obj->progs.counting);
-    prog_fds[2] = bpf_program__fd(obj->progs.pingpong);
-    prog_fds[3] = bpf_program__fd(obj->progs.write_file);
+    prog_fds[0] = bpf_program__fd(payload->progs.test);
+    prog_fds[1] = bpf_program__fd(payload->progs.counting);
+    prog_fds[2] = bpf_program__fd(payload->progs.pingpong);
+    prog_fds[3] = bpf_program__fd(payload->progs.write_file);
     ret = __sys_io_uring_register(ring->ring_fd, IORING_REGISTER_BPF,
                                     prog_fds, ARRAY_SIZE(prog_fds));
+
     
     if (ret < 0) {
         fprintf(stderr, "bpf prog register failed %i\n", ret);
 		exit(1);
     }
-    *pobj = obj;
+    *pobj = payload;
 }
 
 static void print_map(int map_fd, int limit)
@@ -132,7 +128,7 @@ static int test2(void)
     };
     struct io_uring ring;
     struct io_uring_sqe *sqe;
-    struct io_uirng_cqe *cqe;
+    struct io_uring_cqe *cqe;
     struct uring_bpf *obj;
     int ret;
 
@@ -197,7 +193,7 @@ static int test3(void)
         io_uring_cqe_seen(&ring, cqe);
     }
 
-    print_map(bpf_map__fd(obj->map.arr), 10);
+    print_map(bpf_map__fd(obj->maps.arr), 10);
     uring_bpf__destroy(obj);
     io_uring_queue_exit(&ring);
     return 0;

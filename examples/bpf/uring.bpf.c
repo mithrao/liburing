@@ -53,14 +53,14 @@ static long (*iouring_reap_cqe) (void *ctx, u32 cq, struct io_uring_cqe *cqe, u3
  * const void *     src
  * u32              size
 */
-static long (*iouring_bpf_copy_to_user) (void *ctx, const void *src, __u32 size) = (void *) 167;
+// static long (*iouring_bpf_copy_to_user) (void *ctx, const void *src, __u32 size) = (void *) 167;
 
-struct bpf_map_def SEC("maps") arr = {
-    .type = BPF_MAP_TYPE_ARRAY,
-    .key_size = sizeof(u32),
-    .value_size = sizeof(unsigned long),
-    .max_entries = 256,
-};
+struct {
+    __uint(type, BPF_MAP_TYPE_ARRAY);
+    __uint(max_entries, 256);
+    __type(key, u32);
+    __type(value, unsigned long);
+} arr SEC(".maps");
 
 #define ARR_SLOT        0
 #define REENTER_SLOT    10
@@ -81,7 +81,7 @@ static unsigned long readv(u32 kv)
 SEC("iouring.s/")
 int test(struct io_bpf_ctx *bpf_ctx)
 {
-    struct io_uring_bpf_ctx *ctx = bpf_ctx->u;
+    struct io_uring_bpf_ctx *ctx = &bpf_ctx->u;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe = {};
     u32 key = 0;
@@ -94,7 +94,7 @@ int test(struct io_bpf_ctx *bpf_ctx)
     /* make sure we don't repeat it twice */
     if (readv(REENTER_SLOT))
         return 0;
-    write(REENTER_SLOT, 1);
+    writev(REENTER_SLOT, 1);
 
     /* just write some values */
     writev(ARR_SLOT, 11);
@@ -126,8 +126,8 @@ int test(struct io_bpf_ctx *bpf_ctx)
     writev(ARR_SLOT + 5, secret);
 
     /* copy to userspace */
-    secret = 31;
-    bpf_copy_to_user(uptr, &secret, sizeof(secret));
+    // secret = 31;
+    // bpf_copy_to_user(uptr, &secret, sizeof(secret));
 
     ctx->wait_idx = 0;
     ctx->wait_nr = 1;
@@ -146,7 +146,7 @@ static inline void io_uring_prep_timeout(struct io_uring_sqe *sqe,
 SEC("iouring.s/")
 int counting(struct io_bpf_ctx *bpf_ctx)
 {
-    struct io_uring_bpf_ctx *ctx = bpf_ctx->u;
+    struct io_uring_bpf_ctx *ctx = &bpf_ctx->u;
     struct counting_ctx *uctx = (void *)(unsigned long)ctx->user_data;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe;
@@ -176,7 +176,7 @@ int counting(struct io_bpf_ctx *bpf_ctx)
 SEC("iouring.s/")
 int pingpong(struct io_bpf_ctx *bpf_ctx)
 {
-    struct io_uring_bpf_ctx *ctx = bpf_ctx->u;
+    struct io_uring_bpf_ctx *ctx = &bpf_ctx->u;
     struct ping_ctx *uctx = (void *)(unsigned long)ctx->user_data;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe;
@@ -214,7 +214,7 @@ static inline void io_uring_prep_write(struct io_uring_sqe *sqe, int fd,
 SEC("iouring.s/")
 int write_file(struct io_bpf_ctx *bpf_ctx)
 {
-    struct io_uring_bpf_ctx *ctx = bpf_ctx->u;
+    struct io_uring_bpf_ctx *ctx = &bpf_ctx->u;
     const int off_idx = 1, infl_idx = 0;
     struct io_uring_sqe sqe;
     struct io_uring_cqe cqe;

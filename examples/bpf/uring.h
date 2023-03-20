@@ -1,8 +1,6 @@
-#progma once
+#pragma once
 
-#ifdef ARRAY_SIZE
-    #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
-#endif
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
 struct counting_ctx {
     struct __kernel_timespec ts;
