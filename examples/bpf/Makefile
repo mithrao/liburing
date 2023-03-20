@@ -2,10 +2,10 @@ out_dir := .tmp
 CLANG ?= clang
 LLVM_STRIP ?= llvm-strip
 BPFTOOL ?= bpftool
-INCLUDES := -I$(out_dir)
-CFLAGS := -g -O2 -Wall -L../../src/ -I../../src/include/
+INCLUDES := -I$(out_dir) -I/usr/include -I/usr/lib/x86_64-linux-gnu
+CFLAGS := -g -O2 -Wall -L../../src/
 ARCH := $(shell uname -m | sed 's/x86_64/x86/')
-# LIBBPF := <linux-tree>/tools/lib/bpf/libbpf.a
+LIBBPF := /usr/lib64/libbpf.a
 
 include ../../Makefile.quiet
 
@@ -25,7 +25,7 @@ $(out_dir)/%.o: %.c $(wildcard %.h) | $(out_dir)
 $(out_dir)/%.skel.h: $(out_dir)/%.bpf.o | $(out_dir)
 	$(BPFTOOL) gen skeleton $< > $@
 
-$(out_dir)/%.bpf.o: %.bpf.c $(wildcard %.h) vmlinux | $(out_dir)
+$(out_dir)/%.bpf.o: %.bpf.c $(wildcard %.h) | $(out_dir)
 	$(QUIET_CC)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(ARCH)	\
 		     $(INCLUDES) -c $(filter %.c,$^) -o $@ &&		\
 	$(LLVM_STRIP) -g $@
@@ -45,6 +45,6 @@ endif
 	@
 
 clean:
-	$(Q)rm -rf $(out_dir) $(targets) ./vmlinux.h
+	$(Q)rm -rf $(out_dir) $(targets) 
 
 .PHONY: all clean vmlinux libbpf_target
