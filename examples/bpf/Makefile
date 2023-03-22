@@ -1,8 +1,8 @@
-out_dir := .tmp
+out_dir := skel
 CLANG ?= clang
 LLVM_STRIP ?= llvm-strip
 BPFTOOL ?= bpftool
-INCLUDES := -I$(out_dir) -I ../../src/include/ -I/usr/include/ -I/usr/lib/x86_64-linux-gnu/ -I.
+INCLUDES := -I$(out_dir) -I ../../src/include/ -I/usr/include/ -I.
 CFLAGS := -g -O2 -Wall -L../../src/
 ARCH := $(shell uname -m | sed 's/x86_64/x86/')
 LIBBPF := /usr/lib64/libbpf.a

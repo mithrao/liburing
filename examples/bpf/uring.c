@@ -33,10 +33,10 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
     /* 1 additional CQ, 2 in total */
     memset(&param, 0, sizeof(param));
     param.nr_cq = ARRAY_SIZE(cq_sizes);
-    param.cq_sizes = (__u64) (unsigned long) cq_sizes;
+    param.cq_sizes = (__u64) (unsigned long)cq_sizes;
     ret = io_uring_queue_init_params(8, ring, &param);
     if (ret) {
-        fprintf(stderr, "ring setup fialed: %d\n", ret);
+        fprintf(stderr, "ring setup failed: %d\n", ret);
         exit(1);
     }
 
@@ -56,10 +56,9 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
     prog_fds[1] = bpf_program__fd(payload->progs.counting);
     prog_fds[2] = bpf_program__fd(payload->progs.pingpong);
     prog_fds[3] = bpf_program__fd(payload->progs.write_file);
-    ret = __sys_io_uring_register(ring->ring_fd, IORING_REGISTER_BPF,
-                                    prog_fds, ARRAY_SIZE(prog_fds));
+	ret = __sys_io_uring_register(ring->ring_fd, IORING_REGISTER_BPF,
+					prog_fds, ARRAY_SIZE(prog_fds));
 
-    
     if (ret < 0) {
         fprintf(stderr, "bpf prog register failed %i\n", ret);
 		exit(1);
@@ -97,7 +96,7 @@ static int test1(void)
 
     sqe = io_uring_get_sqe(&ring);
     io_uring_prep_bpf(sqe, 0);
-    sqe->user_data = (__u64)(unsigned long) &secret;
+    sqe->user_data = (__u64)(unsigned long)&secret;
 
     ret = io_uring_submit(&ring);
     assert(ret == 1);
@@ -142,7 +141,7 @@ static int test2(void)
 
     sqe = io_uring_get_sqe(&ring);
     io_uring_prep_bpf(sqe, 1);
-    sqe->user_data = (__u64)(unsigned long) &b;
+    sqe->user_data = (__u64)(unsigned long)&b;
     ret = io_uring_submit(&ring);
     assert(ret == 1);
 
@@ -212,11 +211,11 @@ static char verify_buf[FILL_BLOCK_SIZE];
 static int test4(void)
 {
     struct io_uring ring;
-	struct io_uring_cqe *cqe;
 	struct io_uring_sqe *sqe;
+	struct io_uring_cqe *cqe;
 	struct uring_bpf *obj;
 	int i, j, ret, fd;
-    char filename[] = "./.tmp/bpf_file_XXXXXX";
+    char filename[] = "./skel/bpf_file_XXXXXX";
 	char pattern = 0xae;
     void *mem;
 
@@ -237,7 +236,7 @@ static int test4(void)
 
     sqe = io_uring_get_sqe(&ring);
     io_uring_prep_bpf(sqe, 3);
-    sqe->user_data = (__u64)(unsigned long) mem;
+    sqe->user_data = (__u64)(unsigned long)mem;
     ret = io_uring_submit(&ring);
     assert(ret == 1);
 
