@@ -40,11 +40,17 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
         exit(1);
     }
 
-    payload = uring_bpf__open_and_load();
-    if (!payload) {
-        fprintf(stderr, "failed to open and load BPF payloadect\n");
-        exit(1);
-    }
+    payload = uring_bpf__open();
+	if (!payload) {
+		fprintf(stderr, "failed to open and/or load BPF object\n");
+		exit(1);
+	}
+
+	ret = uring_bpf__load(payload);
+	if (ret) {
+		fprintf(stderr, "failed to load BPF object: %d\n", ret);
+		exit(1);
+	}
 
     prog_fds[0] = bpf_program__fd(payload->progs.test);
     prog_fds[1] = bpf_program__fd(payload->progs.counting);
