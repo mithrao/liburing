@@ -5,7 +5,6 @@
 #include <bpf/bpf_core_read.h>
 
 typedef size_t socklen_t;
-typedef unsigned short mode_t;
 
 #ifndef ARRAY_SIZE
 	#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))

@@ -50,24 +50,24 @@ int test(struct io_uring_bpf_ctx *ctx)
     /* just write some values to a BPF array */
     writev(ARR_SLOT, 11);
 
-    /* emit CQE to the main CQ */
-    iouring_emit_cqe(bpf_ctx, 0, 3, 13, 0);
+	/* emit a new CQE to the main CQ */
+	bpf_io_uring_emit_cqe(ctx, MAIN_CQ, 3, 13, 0);
 
-    /* emit 2 CQEs to a second CQ and reap them */
-    iouring_emit_cqe(bpf_ctx, cq_idx, 4, 17, 0);
-    iouring_emit_cqe(bpf_ctx, cq_idx, 5, 19, 0);
+	/* emit 2 CQEs to the second CQ and reap them */
+	bpf_io_uring_emit_cqe(ctx, cq_idx, 4, 17, 0);
+	bpf_io_uring_emit_cqe(ctx, cq_idx, 5, 19, 0);
 
-    /* reap just submitted CQEs */
-    ret = iouring_reap_cqe(bpf_ctx, cq_idx, &cqe, sizeof(cqe));
-    writev(ARR_SLOT + 1, ret ? ret : cqe.user_data);
-    ret = iouring_reap_cqe(bpf_ctx, cq_idx, &cqe, sizeof(cqe));
-    writev(ARR_SLOT + 2, ret ? ret : cqe.user_data);
+	/* reap just submitted CQEs */
+	ret = bpf_io_uring_reap_cqe(ctx, cq_idx, &cqe, sizeof(cqe));
+	writev(ARR_SLOT + 1, ret ? ret : cqe.user_data);
+	ret = bpf_io_uring_reap_cqe(ctx, cq_idx, &cqe, sizeof(cqe));
+	writev(ARR_SLOT + 2, ret ? ret : cqe.user_data);
 
     /* submit a nop request */
     io_uring_prep_nop(&sqe);
     sqe.user_data = 2;
     sqe.flags = 0;
-    ret = bpf_io_uring_submit(bpf_ctx, &sqe, sizeof(sqe));
+    ret = bpf_io_uring_submit(ctx, &sqe, sizeof(sqe));
     writev(ARR_SLOT + 3, ret < 0 ? ret : 21);
 
     /* make sure we can read ctx->user_data */
