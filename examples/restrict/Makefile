@@ -23,10 +23,5 @@ test_srcs := register-restrictions.c
 
 test_objs := $(patsubst %.c,%.ol,$(test_srcs))
 
-install: $(all_targets) runtests.sh runtests-loop.sh
-	$(INSTALL) -D -d -m 755 $(datadir)/liburing-test/
-	$(INSTALL) -D -m 755 $(all_targets) $(datadir)/liburing-test/
-	$(INSTALL) -D -m 755 runtests.sh  $(datadir)/liburing-test/
-	$(INSTALL) -D -m 755 runtests-loop.sh  $(datadir)/liburing-test/
 clean:
 	@rm -f $(all_targets) $(test_objs)
