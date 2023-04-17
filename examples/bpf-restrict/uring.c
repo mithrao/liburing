@@ -56,6 +56,7 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
 
 static int test5(void)
 {
+	struct io_uring_restriction res[3];
     struct io_uring_sqe *sqe;
     struct io_uring_cqe *cqe;
     struct io_uring ring;
@@ -75,6 +76,34 @@ static int test5(void)
 
     ring_prep(&ring, &obj);
 
+	res[0].opcode = IORING_RESTRICTION_SQE_OP;
+	res[0].sqe_op = IORING_OP_WRITEV;
+
+	res[1].opcode = IORING_RESTRICTION_SQE_OP;
+	res[1].sqe_op = IORING_OP_WRITE;
+
+	res[2].opcode = IORING_RESTRICTION_SQE_OP;
+	res[2].sqe_op = IORING_OP_BPF;
+
+	ret = io_uring_register_restrictions(&ring, res, 3);
+	if (ret) {
+		if (ret == -EINVAL)
+			return 1;
+
+		fprintf(stderr, "failed to register restrictions: %d\n", ret);
+		return 1;
+	}
+
+	ret = io_uring_enable_rings(&ring);
+	if (ret) {
+		fprintf(stderr, "ring enabling failed: %d\n", ret);
+		return 1;
+	}
+
+	sqe = io_uring_get_sqe(&ring);
+	io_uring_prep_bpf(sqe, 0);
+	sqe->user_data = 29;
+
 	sqe = io_uring_get_sqe(&ring);
 	io_uring_prep_writev(sqe, pipe1[1], &vec, 1, 0);
 	sqe->user_data = 1;
@@ -84,12 +113,12 @@ static int test5(void)
 	sqe->user_data = 2;
 
 	ret = io_uring_submit(&ring);
-	if (ret != 2) {
+	if (ret != 3) {
 		fprintf(stderr, "submit: %d\n", ret);
 		return 1;
 	}
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
 		ret = io_uring_wait_cqe(&ring, &cqe);
 		if (ret) {
 			fprintf(stderr, "wait: %d\n", ret);
@@ -109,6 +138,8 @@ static int test5(void)
 				fprintf(stderr, "read res: %d\n", cqe->res);
 				return 1;
 			}
+			break;
+		case 29: /* bpf */
 			break;
 		}
 		io_uring_cqe_seen(&ring, cqe);
