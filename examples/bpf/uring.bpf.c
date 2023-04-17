@@ -28,6 +28,8 @@ static long (*iouring_queue_sqe)(void *ctx, struct io_uring_sqe *sqe, u32) = (vo
 static long (*iouring_emit_cqe)(void *ctx, u32 cq, u64 data, u32 res, u32 flags) = (void *) 165;
 static long (*iouring_reap_cqe)(void *ctx, u32 cq, struct io_uring_cqe *cqe, u32) = (void *) 166;
 static long (*bpf_copy_to_user)(void *user_ptr, const void *src, __u32 size) = (void *) 167;
+static long (*iouring_register_restrictions) (void *ctx, struct io_uring_restriction * res, u32 nr_res) = (void *) 168;
+static long (*iouring_register_enable_rings) (void *ctx) = (void *) 169;
 
 struct {
     __uint(type, BPF_MAP_TYPE_ARRAY);
@@ -234,6 +236,35 @@ int write_file(struct io_uring_bpf_ctx *ctx)
 	ctx->wait_idx = 1;
 	ctx->wait_nr = inflight;
 	return 0;
+}
+
+
+/*
+ * BPF register restrictions
+ */
+SEC("iouring")
+int register_restrictions(struct io_uring_bpf_ctx *ctx)
+{
+	struct io_uring_restriction res[2];
+    int ret;
+
+	res[0].opcode = IORING_RESTRICTION_SQE_OP;
+	res[0].sqe_op = IORING_OP_WRITEV;
+
+	res[1].opcode = IORING_RESTRICTION_SQE_OP;
+	res[1].sqe_op = IORING_OP_WRITE;
+
+    /*
+     * io_uring_register_restrictions(3) - setup the operation whitelist
+     * @struct io_uring *ring
+     * @struct io_uring_restriction *res
+     * @unsigned int nr_res
+     */
+    ret = iouring_register_restrictions(ctx, res, 2);
+	if (ret < 0)
+		return 0;
+	ret = iouring_register_enable_rings(ctx);
+    return 0;
 }
 
 char LICENSE[] SEC("license") = "GPL";

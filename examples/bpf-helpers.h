@@ -199,7 +199,8 @@ enum bpf_prog_type2 {
 	FN(ima_inode_hash),		\
 	FN(sock_from_file),		\
 	FN(check_mtu),			\
-	FN(iouring_queue_sqe),
+	FN(iouring_queue_sqe), \
+	FN(iouring_register_restrictions), \
 
 #define __BPF_ENUM_FN(x) MY_BPF_FUNC_ ## x
 enum {

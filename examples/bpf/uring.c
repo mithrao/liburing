@@ -27,11 +27,12 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
 	struct uring_bpf *obj;
 	struct io_uring_params param;
 	__u32 cq_sizes[2] = {128, 128};
-	int ret, prog_fds[4];
+	int ret, prog_fds[5];
 
 	memset(&param, 0, sizeof(param));
 	param.nr_cq = ARRAY_SIZE(cq_sizes);
 	param.cq_sizes = (__u64)(unsigned long)cq_sizes;
+    param.flags = IORING_SETUP_R_DISABLED;
 	ret = io_uring_queue_init_params(8, ring, &param);
 	if (ret) {
 		fprintf(stderr, "ring setup failed: %d\n", ret);
@@ -53,6 +54,7 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
 	prog_fds[1] = bpf_program__fd(obj->progs.counting);
 	prog_fds[2] = bpf_program__fd(obj->progs.pingpong);
 	prog_fds[3] = bpf_program__fd(obj->progs.write_file);
+    prog_fds[4] = bpf_program__fd(obj->progs.register_restrictions);
 	ret = __sys_io_uring_register(ring->ring_fd, IORING_REGISTER_BPF,
 					prog_fds, ARRAY_SIZE(prog_fds));
 	if (ret < 0) {
@@ -242,6 +244,71 @@ static int test4(void)
 	return 0;
 }
 
+static int test5(void)
+{
+    struct io_uring_sqe *sqe;
+    struct io_uring_cqe *cqe;
+    struct io_uring ring;
+	struct uring_bpf *obj;
+    int ret, pipe1[2];
+
+    uint64_t ptr;
+    struct iovec vec = {
+        .iov_base = &ptr,
+        .iov_len  = sizeof(ptr),
+    };
+
+    if (pipe(pipe1) != 0) {
+        perror("pipe");
+        return 1;
+    }
+
+    ring_prep(&ring, &obj);
+
+	sqe = io_uring_get_sqe(&ring);
+	io_uring_prep_writev(sqe, pipe1[1], &vec, 1, 0);
+	sqe->user_data = 1;
+
+	sqe = io_uring_get_sqe(&ring);
+	io_uring_prep_readv(sqe, pipe1[0], &vec, 1, 0);
+	sqe->user_data = 2;
+
+	ret = io_uring_submit(&ring);
+	if (ret != 2) {
+		fprintf(stderr, "submit: %d\n", ret);
+		return 1;
+	}
+
+    for (int i = 0; i < 2; i++) {
+		ret = io_uring_wait_cqe(&ring, &cqe);
+		if (ret) {
+			fprintf(stderr, "wait: %d\n", ret);
+			return 1;
+		}
+
+		switch (cqe->user_data) {
+		case 1: /* writev */
+			if (cqe->res != sizeof(ptr)) {
+				fprintf(stderr, "write res: %d\n", cqe->res);
+				return 1;
+			}
+
+			break;
+		case 2: /* readv should be denied */
+			if (cqe->res != -EACCES) {
+				fprintf(stderr, "read res: %d\n", cqe->res);
+				return 1;
+			}
+			break;
+		}
+		io_uring_cqe_seen(&ring, cqe);
+	}
+
+    uring_bpf__destroy(obj);
+    io_uring_queue_exit(&ring);
+    return 0;
+}
+
 int main(int arg, char **argv)
 {
 	fprintf(stderr, "test1() ============\n");
@@ -255,6 +322,9 @@ int main(int arg, char **argv)
 
 	fprintf(stderr, "\ntest4() ============\n");
 	test4();
+
+    fprintf(stderr, "\ntest5() ============\n");
+	test5();
 
 	return 0;
 }
