@@ -58,8 +58,8 @@ static unsigned long readv(u32 kv)
 /*
  * just a set of use examples for features
  */
-SEC("iouring")
-int test(struct io_uring_bpf_ctx *ctx)
+SEC("cqring")
+int test(struct cqring_bpf_ctx *ctx)
 {
 	struct io_uring_sqe sqe;
 	struct io_uring_cqe cqe = {};
@@ -124,8 +124,8 @@ static inline void io_uring_prep_timeout(struct io_uring_sqe *sqe,
 /*
  * ticks-react N times using timeout reqs and CQ waiting
  */
-SEC("iouring")
-int counting(struct io_uring_bpf_ctx *ctx)
+SEC("cqring")
+int counting(struct cqring_bpf_ctx *ctx)
 {
 	struct counting_ctx *uctx = (void *)(unsigned long)ctx->user_data;
 	struct io_uring_sqe sqe;
@@ -159,8 +159,8 @@ int counting(struct io_uring_bpf_ctx *ctx)
  * repeatedly writing a CQE to another program's CQ and
  * waiting for a response
  */
-SEC("iouring")
-int pingpong(struct io_uring_bpf_ctx *ctx)
+SEC("cqring")
+int pingpong(struct cqring_bpf_ctx *ctx)
 {
 	struct ping_ctx *uctx = (void *)(unsigned long)ctx->user_data;
 	struct io_uring_sqe sqe;
@@ -202,8 +202,8 @@ static inline void io_uring_prep_write(struct io_uring_sqe *sqe, int fd,
 /*
  * BPF writes N bytes to a file keeping QD>1
  */
-SEC("iouring")
-int write_file(struct io_uring_bpf_ctx *ctx)
+SEC("cqring")
+int write_file(struct cqring_bpf_ctx *ctx)
 {
 	const int off_idx = 1, infl_idx = 0;
 	struct io_uring_sqe sqe;
