@@ -15,11 +15,11 @@
 #include "uring.skel.h"
 #include "uring.h"
 
-static inline void io_uring_prep_bpf(struct io_uring_sqe *sqe, unsigned idx)
+static inline void io_uring_prep_cq_bpf(struct io_uring_sqe *sqe, unsigned idx)
 {
 	io_uring_prep_nop(sqe);
 	sqe->off = idx;
-	sqe->opcode = IORING_OP_BPF;
+	sqe->opcode = IORING_OP_CQ_BPF;
 }
 
 static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
@@ -53,7 +53,7 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
 	prog_fds[1] = bpf_program__fd(obj->progs.counting);
 	prog_fds[2] = bpf_program__fd(obj->progs.pingpong);
 	prog_fds[3] = bpf_program__fd(obj->progs.write_file);
-	ret = __sys_io_uring_register(ring->ring_fd, IORING_REGISTER_BPF,
+	ret = __sys_io_uring_register(ring->ring_fd, IORING_REGISTER_CQ_BPF,
 					prog_fds, ARRAY_SIZE(prog_fds));
 	if (ret < 0) {
 		fprintf(stderr, "bpf prog register failed %i\n", ret);
@@ -88,7 +88,7 @@ static int test1(void)
 	ring_prep(&ring, &obj);
 
 	sqe = io_uring_get_sqe(&ring);
-	io_uring_prep_bpf(sqe, 0);
+	io_uring_prep_cq_bpf(sqe, 0);
 	sqe->user_data = (__u64)(unsigned long)&secret;
 
 	ret = io_uring_submit(&ring);
@@ -127,7 +127,7 @@ static int test2(void)
 	ring_prep(&ring, &obj);
 
 	sqe = io_uring_get_sqe(&ring);
-	io_uring_prep_bpf(sqe, 1);
+	io_uring_prep_cq_bpf(sqe, 1);
 	sqe->user_data = (__u64)(unsigned long)&b;
 	fprintf(stderr, "sqe->user_data %lu\n", (unsigned long)sqe->user_data);
 	ret = io_uring_submit(&ring);
@@ -158,11 +158,11 @@ static int test3(void)
 	uctx[1].idx = 1;
 
 	sqe = io_uring_get_sqe(&ring);
-	io_uring_prep_bpf(sqe, 2);
+	io_uring_prep_cq_bpf(sqe, 2);
 	sqe->user_data = (__u64)(unsigned long)&uctx[0];
 
 	sqe = io_uring_get_sqe(&ring);
-	io_uring_prep_bpf(sqe, 2);
+	io_uring_prep_cq_bpf(sqe, 2);
 	sqe->user_data = (__u64)(unsigned long)&uctx[1];
 
 	// kick off the first bpf
@@ -217,7 +217,7 @@ static int test4(void)
 	assert(!ret);
 
 	sqe = io_uring_get_sqe(&ring);
-	io_uring_prep_bpf(sqe, 3);
+	io_uring_prep_cq_bpf(sqe, 3);
 	sqe->user_data = (__u64)(unsigned long)mem;
 	ret = io_uring_submit(&ring);
 	assert(ret == 1);
