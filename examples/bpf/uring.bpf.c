@@ -236,4 +236,59 @@ int write_file(struct cqring_bpf_ctx *ctx)
 	return 0;
 }
 
+/*
+ * just a set of use examples for features
+ */
+SEC("cqring")
+int test2(struct cqring_bpf_ctx *ctx)
+{
+	struct io_uring_sqe sqe;
+	struct io_uring_cqe cqe = {};
+	u32 key = 0;
+	long *val;
+	int ret, cq_idx = 1;
+	unsigned long secret, f1;
+	__u32 vvv;
+	u64 *uptr;
+
+	/* make sure we don't repeat it twice */
+	if (readv(REENTER_SLOT))
+		return 0;
+	writev(REENTER_SLOT, 1);
+
+	// just write some value
+	writev(ARR_SLOT, 11);
+
+	ret = cqring_reap_cqe(ctx, 0, &cqe, sizeof(cqe));
+	writev(ARR_SLOT + 1, ret ? ret : cqe.user_data);
+	ret = cqring_reap_cqe(ctx, 0, &cqe, sizeof(cqe));
+	writev(ARR_SLOT + 2, ret ? ret : cqe.user_data);
+
+	// emit CQE to the main CQ
+	cqring_emit_cqe(ctx, 0, 3, 13, 0);
+
+	// submit nop SQE
+	io_uring_prep_nop(&sqe);
+	sqe.user_data = 2;
+	sqe.flags = 0;
+	ret = cqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+	writev(ARR_SLOT + 3, ret < 0 ? ret : 21);
+
+	// write back user_data
+	writev(ARR_SLOT + 4, sqe.user_data);
+
+	// demo for reading from userspace
+	uptr = (u64 *)(unsigned long)ctx->user_data;
+	bpf_copy_from_user(&secret, sizeof(secret), uptr);
+	writev(ARR_SLOT + 5, secret);
+
+	// copy to userspace
+	secret = 31;
+	bpf_copy_to_user(uptr, &secret, sizeof(secret));
+
+	ctx->wait_idx = 0;
+	ctx->wait_nr = 1;
+	return 0;
+}
+
 char LICENSE[] SEC("license") = "GPL";

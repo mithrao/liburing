@@ -278,7 +278,7 @@ static int io_uring_wait_cqes_new(struct io_uring *ring,
  * hence this function is safe to use for applications that split SQ and CQ
  * handling between two threads.
  */
-int io_uring_wait_cqes(struct io_uring *ring, struct io_uring_cqe **cqe_ptr,
+s(struct io_uring *ring, struct io_uring_cqe **cqe_ptr,
 		       unsigned wait_nr, struct __kernel_timespec *ts,
 		       sigset_t *sigmask)
 {

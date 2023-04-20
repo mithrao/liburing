@@ -27,7 +27,7 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
 	struct uring_bpf *obj;
 	struct io_uring_params param;
 	__u32 cq_sizes[2] = {128, 128};
-	int ret, prog_fds[4];
+	int ret, prog_fds[5];
 
 	memset(&param, 0, sizeof(param));
 	param.nr_cq = ARRAY_SIZE(cq_sizes);
@@ -53,6 +53,7 @@ static void ring_prep(struct io_uring *ring, struct uring_bpf **pobj)
 	prog_fds[1] = bpf_program__fd(obj->progs.counting);
 	prog_fds[2] = bpf_program__fd(obj->progs.pingpong);
 	prog_fds[3] = bpf_program__fd(obj->progs.write_file);
+	prog_fds[4] = bpf_program__fd(obj->progs.test2);
 	ret = __sys_io_uring_register(ring->ring_fd, IORING_REGISTER_CQ_BPF,
 					prog_fds, ARRAY_SIZE(prog_fds));
 	if (ret < 0) {
@@ -93,6 +94,17 @@ static int test1(void)
 
 	ret = io_uring_submit(&ring);
 	assert(ret == 1);
+
+	sqe = io_uring_get_sqe(&ring);
+	io_uring_prep_nop(sqe);
+	sqe->user_data = 4;
+
+	sqe = io_uring_get_sqe(&ring);
+	io_uring_prep_nop(sqe);
+	sqe->user_data = 5;
+
+	ret = io_uring_submit(&ring);
+	assert(ret == 2);
 
 	sleep(1);
 	io_uring_wait_cqe(&ring, &cqe);
@@ -242,6 +254,57 @@ static int test4(void)
 	return 0;
 }
 
+
+static int test5(void)
+{
+	struct io_uring ring;
+	struct io_uring_cqe *cqe;
+	struct io_uring_sqe *sqe;
+	struct uring_bpf *obj;
+	int ret;
+	unsigned long secret = 29;
+
+	ring_prep(&ring, &obj);
+
+	sqe = io_uring_get_sqe(&ring);
+	io_uring_prep_cq_bpf(sqe, 0);
+	sqe->user_data = (__u64)(unsigned long)&secret;
+
+	ret = io_uring_submit(&ring);
+	assert(ret == 1);
+
+	sqe = io_uring_get_sqe(&ring);
+	io_uring_prep_nop(sqe);
+	sqe->user_data = 4;
+
+	sqe = io_uring_get_sqe(&ring);
+	io_uring_prep_nop(sqe);
+	sqe->user_data = 5;
+
+	ret = io_uring_submit(&ring);
+	assert(ret == 2);
+
+	sleep(1);
+	io_uring_wait_cqe(&ring, &cqe);
+	while (1) {
+		ret = io_uring_peek_cqe(&ring, &cqe);
+		if (ret == -EAGAIN)
+			break;
+
+		assert(ret == 0);
+		fprintf(stderr, "CQE user_data %lu, res %i flags %u\n",
+			(unsigned long)cqe->user_data,
+			(int)cqe->res, (unsigned)cqe->flags);
+		io_uring_cqe_seen(&ring, cqe);
+	}
+
+	print_map(bpf_map__fd(obj->maps.arr), 10);
+	fprintf(stderr, "new secret %lu\n", secret);
+	uring_bpf__destroy(obj);
+	io_uring_queue_exit(&ring);
+	return 0;
+}
+
 int main(int arg, char **argv)
 {
 	fprintf(stderr, "test1() ============\n");
@@ -255,6 +318,9 @@ int main(int arg, char **argv)
 
 	fprintf(stderr, "\ntest4() ============\n");
 	test4();
+
+	fprintf(stderr, "\ntest5() ============\n");
+	test5();
 
 	return 0;
 }

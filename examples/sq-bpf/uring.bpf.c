@@ -62,7 +62,7 @@ static unsigned long readv(u32 kv)
 SEC("sqring")
 int test(struct sqring_bpf_ctx *ctx)
 {
-	unsigned int to_submit;
+	unsigned int to_submit = 0, nr_events;
 	int i, ret = 0;
 	struct io_uring_sqe sqe = {};
 
@@ -73,23 +73,25 @@ int test(struct sqring_bpf_ctx *ctx)
 
 	// just write some value
 	writev(ARR_SLOT, 11);
-
 	to_submit = sqring_sqe_entries(ctx);
+	// to_submit == 0 and always 0!!!
 	writev(ARR_SLOT + 1, to_submit);
-	sqring_do_iopoll(ctx, to_submit);
-	
-	for (i = 0; i < 2; i++) {
-		ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
-		if (ret < 0) {
-			ret = -i;
-			break;
-		}
-		writev(ARR_SLOT + 2 + i, sqe.user_data);
-		ret = sqring_submit_sqe(ctx, &sqe, sizeof(sqe));
-		if (ret <= 0) {
-			break;
-		}
-	}
+	nr_events = sqring_do_iopoll(ctx, to_submit);
+	writev(ARR_SLOT + 2, nr_events);
+	writev(ARR_SLOT + 3, 13);
+
+	// for (i = 0; i < 2; i++) {
+	// 	ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+	// 	if (ret < 0) {
+	// 		ret = -i;
+	// 		break;
+	// 	}
+	// 	writev(ARR_SLOT + 4 + i, sqe.user_data);
+	// 	ret = sqring_submit_sqe(ctx, &sqe, sizeof(sqe));
+	// 	if (ret <= 0) {
+	// 		break;
+	// 	}
+	// }
 
 	return 0;
 }
