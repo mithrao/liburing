@@ -26,10 +26,10 @@ static inline void io_uring_prep_nop(struct io_uring_sqe *sqe)
 
 static long (*bpf_copy_to_user)(void *user_ptr, const void *src, __u32 size) = (void *) 167;
 static long (*sqring_queue_sqe) (void *ctx, struct io_uring_sqe *sqe, u32) = (void *) 168;
-static long (*get_nr_sqe) (void *ctx) = (void *) 169;
-static long (*do_iopoll) (void *ctx, unsigned int to_submit) = (void *) 170;
-static (struct io_uring_sqe *) (*reap_sqe) (void *ctx) = (void *) 171;
-static long (*submit_sqe) (void *ctx, struct io_uring_sqe *sqe) = (void *) 172;
+static long (*sqring_sqe_entries) (void *ctx) = (void *) 169;
+static long (*sqring_do_iopoll) (void *ctx, unsigned int to_submit) = (void *) 170;
+static long (*sqring_reap_sqe) (void *ctx, struct io_uring_sqe *sqe, u32) = (void *) 171;
+static long (*sqring_submit_sqe) (void *ctx, struct io_uring_sqe *sqe, u32) = (void *) 172;
 
 struct {
     __uint(type, BPF_MAP_TYPE_ARRAY);
@@ -62,16 +62,9 @@ static unsigned long readv(u32 kv)
 SEC("sqring")
 int test(struct sqring_bpf_ctx *ctx)
 {
-	struct io_uring_sqe *sqe;
-	struct io_uring_cqe *cqe;
 	unsigned int to_submit;
-	int i = 0, ret = 0, submitted = 0;
-	u32 key = 0;
-	long *val;
-	int ret, cq_idx = 1;
-	unsigned long secret, f1;
-	__u32 vvv;
-	u64 *uptr;
+	int i, ret = 0;
+	struct io_uring_sqe sqe = {};
 
 	/* make sure we don't repeat it twice */
 	if (readv(REENTER_SLOT))
@@ -81,20 +74,20 @@ int test(struct sqring_bpf_ctx *ctx)
 	// just write some value
 	writev(ARR_SLOT, 11);
 
-	to_submit = get_nr_sqe(ctx);
-	writev(ARR_SLOT + 1, to_submit)
-	do_iopoll(ctx, to_submit);
+	to_submit = sqring_sqe_entries(ctx);
+	writev(ARR_SLOT + 1, to_submit);
+	sqring_do_iopoll(ctx, to_submit);
 	
-	while (i < to_submit) {
-		sqe = reap_sqe(ctx);
-		if (unlikely(!sqe)) {
+	for (i = 0; i < 2; i++) {
+		ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+		if (ret < 0) {
 			ret = -i;
-			return 0;
+			break;
 		}
 		writev(ARR_SLOT + 2 + i, sqe.user_data);
-		ret = submit_sqe(ctx, sqe);
+		ret = sqring_submit_sqe(ctx, &sqe, sizeof(sqe));
 		if (ret <= 0) {
-			return 0;
+			break;
 		}
 	}
 

@@ -15,13 +15,6 @@
 #include "uring.skel.h"
 #include "uring.h"
 
-static inline void io_uring_prep_cq_bpf(struct io_uring_sqe *sqe, unsigned idx)
-{
-	io_uring_prep_nop(sqe);
-	sqe->off = idx;
-	sqe->opcode = IORING_OP_CQ_BPF;
-}
-
 static inline void io_uring_prep_sq_bpf(struct io_uring_sqe *sqe, unsigned idx)
 {
 	io_uring_prep_nop(sqe);
@@ -87,11 +80,12 @@ static int test1(void)
 	struct io_uring_sqe *sqe;
 	struct uring_bpf *obj;
 	unsigned long secret = 29;
+	int ret, i;
 
 	ring_prep(&ring, &obj);
 
 	sqe = io_uring_get_sqe(&ring);
-	io_uring_prep_bpf(sqe, 0);
+	io_uring_prep_sq_bpf(sqe, 0);
 	sqe->user_data = (__u64)(unsigned long)&secret;
 
 	ret = io_uring_submit(&ring);
