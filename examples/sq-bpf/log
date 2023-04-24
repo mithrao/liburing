@@ -1,0 +1,2315 @@
+test1() ============
+log bufR1 type=ctx expected=fp
+; int test(struct sqring_bpf_ctx *ctx)
+0: (bf) r6 = r1
+1: (b7) r1 = 0
+; struct io_uring_sqe sqe = {};
+2: (7b) *(u64 *)(r10 -16) = r1
+last_idx 2 first_idx 0
+regs=2 stack=0 before 1: (b7) r1 = 0
+3: (7b) *(u64 *)(r10 -24) = r1
+4: (7b) *(u64 *)(r10 -32) = r1
+5: (7b) *(u64 *)(r10 -40) = r1
+6: (7b) *(u64 *)(r10 -48) = r1
+7: (7b) *(u64 *)(r10 -56) = r1
+8: (7b) *(u64 *)(r10 -64) = r1
+9: (7b) *(u64 *)(r10 -72) = r1
+10: (b7) r1 = 10
+11: (63) *(u32 *)(r10 -4) = r1
+12: (bf) r2 = r10
+; 
+13: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+14: (18) r1 = 0xffff888101a63000
+16: (85) call bpf_map_lookup_elem#1
+; return val ? *val : -1UL;
+17: (55) if r0 != 0x0 goto pc+2
+
+from 17 to 20: R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6_w=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmm???? fp-16_w=00000000 fp-24_w=00000000 fp-32_w=00000000 fp-40_w=00000000 fp-48_w=00000000 fp-56_w=00000000 fp-64_w=00000000 fp-72_w=00000000
+; return val ? *val : -1UL;
+20: (79) r1 = *(u64 *)(r0 +0)
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6_w=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmm???? fp-16_w=00000000 fp-24_w=00000000 fp-32_w=00000000 fp-40_w=00000000 fp-48_w=00000000 fp-56_w=00000000 fp-64_w=00000000 fp-72_w=00000000
+; if (readv(REENTER_SLOT))
+21: (55) if r1 != 0x0 goto pc-4
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R1_w=inv0 R6_w=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmm???? fp-16_w=00000000 fp-24_w=00000000 fp-32_w=00000000 fp-40_w=00000000 fp-48_w=00000000 fp-56_w=00000000 fp-64_w=00000000 fp-72_w=00000000
+22: (b7) r1 = 10
+23: (63) *(u32 *)(r10 -4) = r1
+24: (bf) r2 = r10
+; 
+25: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+26: (18) r1 = 0xffff888101a63000
+28: (85) call bpf_map_lookup_elem#1
+; if (val)
+29: (15) if r0 == 0x0 goto pc+2
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmm???? fp-16=00000000 fp-24=00000000 fp-32=00000000 fp-40=00000000 fp-48=00000000 fp-56=00000000 fp-64=00000000 fp-72=00000000
+30: (b7) r1 = 1
+; *val = v;
+31: (7b) *(u64 *)(r0 +0) = r1
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R1_w=inv1 R6=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmm???? fp-16=00000000 fp-24=00000000 fp-32=00000000 fp-40=00000000 fp-48=00000000 fp-56=00000000 fp-64=00000000 fp-72=00000000
+32: (b7) r1 = 0
+33: (63) *(u32 *)(r10 -4) = r1
+last_idx 33 first_idx 29
+regs=2 stack=0 before 32: (b7) r1 = 0
+34: (bf) r2 = r10
+; 
+35: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+36: (18) r1 = 0xffff888101a63000
+38: (85) call bpf_map_lookup_elem#1
+; if (val)
+39: (15) if r0 == 0x0 goto pc+2
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmm???? fp-16=00000000 fp-24=00000000 fp-32=00000000 fp-40=00000000 fp-48=00000000 fp-56=00000000 fp-64=00000000 fp-72=00000000
+40: (b7) r1 = 100
+; *val = v;
+41: (7b) *(u64 *)(r0 +0) = r1
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R1_w=inv100 R6=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmm???? fp-16=00000000 fp-24=00000000 fp-32=00000000 fp-40=00000000 fp-48=00000000 fp-56=00000000 fp-64=00000000 fp-72=00000000
+; to_submit = sqring_sq_entries(ctx);
+42: (bf) r1 = r6
+43: (85) call bpf_sqring_sq_entries#169
+44: (bf) r7 = r0
+45: (b7) r1 = 1
+46: (63) *(u32 *)(r10 -4) = r1
+47: (bf) r2 = r10
+48: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+49: (18) r1 = 0xffff888101a63000
+51: (85) call bpf_map_lookup_elem#1
+; if (val)
+52: (15) if r0 == 0x0 goto pc+4
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R10=fp0 fp-8=mmmm???? fp-16=00000000 fp-24=00000000 fp-32=00000000 fp-40=00000000 fp-48=00000000 fp-56=00000000 fp-64=00000000 fp-72=00000000
+; writev(ARR_SLOT + 1, to_submit);
+53: (bf) r1 = r7
+54: (67) r1 <<= 32
+55: (77) r1 >>= 32
+; *val = v;
+56: (7b) *(u64 *)(r0 +0) = r1
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R10=fp0 fp-8=mmmm???? fp-16=00000000 fp-24=00000000 fp-32=00000000 fp-40=00000000 fp-48=00000000 fp-56=00000000 fp-64=00000000 fp-72=00000000
+; if (to_submit == 0 || to_submit > 2) {
+57: (bf) r1 = r7
+58: (07) r1 += -1
+59: (67) r1 <<= 32
+60: (77) r1 >>= 32
+61: (25) if r1 > 0x1 goto pc-44
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R1_w=inv(id=0,umax_value=1,var_off=(0x0; 0x1)) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R10=fp0 fp-8=mmmm???? fp-16=00000000 fp-24=00000000 fp-32=00000000 fp-40=00000000 fp-48=00000000 fp-56=00000000 fp-64=00000000 fp-72=00000000
+62: (b7) r9 = 0
+63: (05) goto pc+49
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 113
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R9=inv0 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv0 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv0 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv1 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv1 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 69
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv1 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9=inv1 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9=inv1 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 64
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv2 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv2 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 64
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv2 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9=inv2 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9=inv2 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 121
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0=inv(id=0) R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv3 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv3 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 76
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv3 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9=inv3 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9=inv3 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 76
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv4 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 76
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv4 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv4 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv4 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 76
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv5 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv5 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 76
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv5 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv5 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv5 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 64
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv6 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv6 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 64
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv6 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv6 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv6 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 64
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv7 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv7 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 64
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv7 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv7 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv7 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 64
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv8 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv8 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 64
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv8 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv8 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv8 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv9 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv9 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv9 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv9 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv9 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv10 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv10 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv10 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv10 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv10 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv11 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv11 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv11 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv11 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv11 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv12 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv12 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv12 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv12 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv12 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv13 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv13 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv13 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv13 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv13 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv14 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv14 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv14 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv14 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv14 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv15 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv15 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv15 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv15 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv15 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv16 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv16 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv16 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv16 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv16 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv17 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv17 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv17 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv17 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv17 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv18 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv18 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv18 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv18 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv18 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv19 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv19 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv19 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv19 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv19 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv20 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv20 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv20 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv20 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv20 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv21 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv21 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv21 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv21 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv21 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv22 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv22 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv22 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv22 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv22 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv23 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv23 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv23 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv23 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv23 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv24 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv24 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv24 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv24 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv24 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv25 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv25 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv25 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv25 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv25 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv26 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv26 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv26 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv26 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv26 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv27 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv27 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv27 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv27 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv27 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv28 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv28 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv28 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv28 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv28 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv29 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv29 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv29 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv29 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv29 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv30 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv30 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv30 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv30 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv30 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv31 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv31 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv31 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv31 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv31 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv32 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv32 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv32 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv32 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv32 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv33 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv33 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv33 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv33 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv33 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv34 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv34 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv34 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv34 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv34 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv35 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv35 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv35 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv35 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv35 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv36 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv36 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9_w=inv36 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv36 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv36 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv37 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv37 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv37 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv37 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv37 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+73: (bf) r2 = r9
+74: (67) r2 <<= 32
+75: (77) r2 >>= 32
+; for (i = 0; i < to_submit; i++) {
+76: (5d) if r1 != r2 goto pc+36
+
+from 76 to 113: R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv38 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv38 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; writev(ARR_SLOT + 4, ret < 0 ? ret : 21);
+113: (bf) r2 = r10
+; 
+114: (07) r2 += -72
+; ret = sqring_reap_sqe(ctx, &sqe, sizeof(sqe));
+115: (bf) r1 = r6
+116: (b7) r3 = 64
+117: (85) call bpf_sqring_reap_sqe#170
+last_idx 117 first_idx 133
+regs=8 stack=0 before 116: (b7) r3 = 64
+118: (67) r0 <<= 32
+119: (c7) r0 s>>= 32
+; if (ret < 0) {
+120: (b7) r1 = 0
+121: (6d) if r1 s> r0 goto pc-45
+ R0_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0xffffffff)) R1_w=inv0 R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8_w=inv(id=0) R9_w=inv38 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+122: (bf) r1 = r10
+; writev(ARR_SLOT + 2 + i, sqe.user_data);
+123: (07) r1 += -72
+124: (79) r8 = *(u64 *)(r1 +32)
+125: (bf) r1 = r9
+126: (07) r1 += 2
+127: (63) *(u32 *)(r10 -4) = r1
+128: (bf) r2 = r10
+129: (07) r2 += -4
+; unsigned long *val = bpf_map_lookup_elem(&arr, &kv);
+130: (18) r1 = 0xffff888101a63000
+132: (85) call bpf_map_lookup_elem#1
+; if (val)
+133: (15) if r0 == 0x0 goto pc-70
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv38 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+; *val = v;
+134: (7b) *(u64 *)(r0 +0) = r8
+ R0=map_value(id=0,off=0,ks=4,vs=8,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv(id=4) R8=inv(id=0) R9=inv38 R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm
+135: (05) goto pc-72
+; if (to_submit == 0 || to_submit > 2) {
+64: (bf) r2 = r10
+; ret = sqring_queue_sqe(ctx, &sqe, sizeof(sqe));
+65: (07) r2 += -72
+66: (bf) r1 = r6
+67: (b7) r3 = 64
+68: (85) call bpf_sqring_queue_sqe#168
+last_idx 68 first_idx 133
+regs=8 stack=0 before 67: (b7) r3 = 64
+; to_submit = sqring_sq_entries(ctx);
+69: (bf) r1 = r7
+70: (67) r1 <<= 32
+71: (77) r1 >>= 32
+; for (i = 0; i < to_submit; i++) {
+72: (07) r9 += 1
+
+cnt: 183
+failed to load BPF object: -28
